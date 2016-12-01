@@ -110,5 +110,14 @@ class FunSetSuite extends FunSuite {
     }
   }
 
+  test("intersection contains all elements of each set") {
+    new TestSets {
+      val s = intersect(s1, s2)
+      assert(!contains(s, 1), "intersect 1")
+      assert(!contains(s, 2), "intersect 2")
+      assert(!contains(s, 3), "intersect 3")
+    }
+  }
+
 
 }
