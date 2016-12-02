@@ -169,18 +169,47 @@ class FunSetSuite extends FunSuite {
   }
 
   trait QueryTestSets extends FilterTestSets{
-    val sFilter1 = filter(s1, (x: Int) => x == 1)
-    val sFilter2 = filter(sUnion2, (x: Int) => (x % 2) == 0)
+    val sMod4Set = (x: Int) => (x % 4) == 0
   }
 
-  test("filter contains elements from first set that fit creteria p") {
-    new ForAllTestSets {
+  test("forall checks if all elements of the set satisfy the condition p") {
+    new QueryTestSets {
 
-      assert(contains(sFilter1, 1), "filter 1 1")
-      assert(!contains(sFilter1, 2), "filter 1 2")
-      assert(contains(sFilter2, 2), "filter 2 2")
-      assert(!contains(sFilter2, 3), "filter 2 3")
-      assert(!contains(sFilter2, 4), "filter 2 4")
+      assert(forall(sUnion2, (x: Int) => x < 4), "forall union2 < 3")
+      assert(!forall(sUnion2, (x: Int) => x < 2), "forall union2 < 2")
+
+      printSet(sMod4Set)
+
+      assert(forall(sMod4Set, (x: Int) => (x % 2) == 0), "forall mod4 mod2")
+      assert(!forall(sMod4Set, (x: Int) => x == 201), "forall mod4 mod3")
+    }
+  }
+
+  test("exists checks if one element of the set satisfy the condition p") {
+    new QueryTestSets {
+
+      assert(exists(sUnion2, (x: Int) => x < 3), "exists union2 < 3")
+      assert(!exists(sUnion2, (x: Int) => x < 1), "exists union2 < 1")
+
+      assert(exists(sMod4Set, (x: Int) => x == 400), "exists mod4 400")
+      assert(!exists(sMod4Set, (x: Int) => x == 301), "exists mod4 300")
+    }
+  }
+
+
+  test("map returns set where very element is modified by p") {
+    new QueryTestSets {
+
+      val sMapx10 = map(sMod4Set, (x: Int) => x * 3)
+      val sMap1 = map(sMod4Set, (x: Int) => 1)
+
+      printSet(sMapx10)
+      assert(contains(sMapx10, 40), "mapx10 has 40")
+      assert(contains(sMapx10, 10), "mapx10 * 10 has 10")
+
+      printSet(sMap1)
+      assert(contains(sMap1, 1), "map1 has 1")
+      assert(!contains(sMap1, 40), "map1 has 40")
     }
   }
 
