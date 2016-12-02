@@ -101,21 +101,86 @@ class FunSetSuite extends FunSuite {
     }
   }
 
+  trait UnionTestSets extends TestSets{
+    val sUnion1 = union(s1, s2)
+    val sUnion2 = union(sUnion1, s3)
+  }
+
   test("union contains all elements of each set") {
-    new TestSets {
-      val s = union(s1, s2)
-      assert(contains(s, 1), "Union 1")
-      assert(contains(s, 2), "Union 2")
-      assert(!contains(s, 3), "Union 3")
+    new UnionTestSets {
+
+      assert(contains(sUnion1, 1), "Union 1 1")
+      assert(contains(sUnion1, 2), "Union 1 2")
+      assert(!contains(sUnion1, 3), "Union 1 3")
+      assert(contains(sUnion2, 3), "Union 2 1")
+      assert(contains(sUnion2, 3), "Union 2 3")
     }
   }
 
-  test("intersection contains all elements of each set") {
-    new TestSets {
-      val s = intersect(s1, s2)
-      assert(!contains(s, 1), "intersect 1")
-      assert(!contains(s, 2), "intersect 2")
-      assert(!contains(s, 3), "intersect 3")
+  trait IntersectTestSets extends UnionTestSets{
+    val sIntersect1 = intersect(s1, s2)
+    val sIntersect2 = intersect( sUnion1, union(s2, s3))
+  }
+
+  test("intersection contains  elements in both set") {
+    new IntersectTestSets {
+
+      assert(!contains(sIntersect1, 1), "intersect 1 1")
+      assert(!contains(sIntersect1, 2), "intersect 1 2")
+      assert(!contains(sIntersect1, 3), "intersect  13")
+
+      assert(!contains(sIntersect2, 1), "intersect 2 1")
+      assert(contains(sIntersect2, 2), "intersect 2 2")
+      assert(!contains(sIntersect2, 3), "intersect 2 3")
+    }
+  }
+
+  trait DiffTestSets extends IntersectTestSets{
+    val sDiff1 = diff(s1, s2)
+    val sDiff2 = diff(s2, sUnion2)
+    val sDiff3= diff(sUnion2, sIntersect2)
+  }
+  test("diff contains  elements only in first set") {
+    new DiffTestSets {
+
+      assert(contains(sDiff1, 1), "diff 1 1")
+      assert(!contains(sDiff1, 2), "diff 1 2")
+      assert(!contains(sDiff2, 1), "diff 2 1")
+      assert(!contains(sDiff2, 2), "diff 2 2")
+      assert(!contains(sDiff3, 2), "diff  3 2")
+      assert(contains(sDiff3, 3), "diff  3 3")
+    }
+  }
+
+  trait FilterTestSets extends DiffTestSets{
+    val sFilter1 = filter(s1, (x: Int) => x == 1)
+    val sFilter2 = filter(sUnion2, (x: Int) => (x % 2) == 0)
+  }
+
+  test("filter contains elements from first set that fit criteria p") {
+    new FilterTestSets {
+
+      assert(contains(sFilter1, 1), "filter 1 1")
+      assert(!contains(sFilter1, 2), "filter 1 2")
+      assert(contains(sFilter2, 2), "filter 2 2")
+      assert(!contains(sFilter2, 3), "filter 2 3")
+      assert(!contains(sFilter2, 4), "filter 2 4")
+    }
+  }
+
+  trait QueryTestSets extends FilterTestSets{
+    val sFilter1 = filter(s1, (x: Int) => x == 1)
+    val sFilter2 = filter(sUnion2, (x: Int) => (x % 2) == 0)
+  }
+
+  test("filter contains elements from first set that fit creteria p") {
+    new ForAllTestSets {
+
+      assert(contains(sFilter1, 1), "filter 1 1")
+      assert(!contains(sFilter1, 2), "filter 1 2")
+      assert(contains(sFilter2, 2), "filter 2 2")
+      assert(!contains(sFilter2, 3), "filter 2 3")
+      assert(!contains(sFilter2, 4), "filter 2 4")
     }
   }
 

@@ -38,12 +38,12 @@ object FunSets {
    * Returns the difference of the two given sets,
    * the set of all elements of `s` that are not in `t`.
    */
-    def diff(s: Set, t: Set): Set = ???
+    def diff(s: Set, t: Set): Set = (x: Int) => s(x) && !t(x)
   
   /**
    * Returns the subset of `s` for which `p` holds.
    */
-    def filter(s: Set, p: Int => Boolean): Set = ???
+    def filter(s: Set, p: Int => Boolean): Set = intersect(s, p)
   
 
   /**
@@ -51,23 +51,32 @@ object FunSets {
    */
   val bound = 1000
 
+  def abs(x: Int) = if(x < 0) -x else x
+
   /**
    * Returns whether all bounded integers within `s` satisfy `p`.
    */
     def forall(s: Set, p: Int => Boolean): Boolean = {
     def iter(a: Int): Boolean = {
-      if (???) ???
-      else if (???) ???
-      else iter(???)
+      if (abs(a) > bound) true
+      else if (contains(s, a) && !p(a)) false
+      else iter(a-1)
     }
-    iter(???)
+    iter(bound)
   }
   
   /**
    * Returns whether there exists a bounded integer within `s`
    * that satisfies `p`.
    */
-    def exists(s: Set, p: Int => Boolean): Boolean = ???
+    def exists(s: Set, p: Int => Boolean): Boolean = {
+      def iter(a: Int): Boolean = {
+        if (abs(a) > bound) false
+        else if (contains(s, a) && p(a)) true
+        else iter(a-1)
+      }
+      iter(bound)
+    }
   
   /**
    * Returns a set transformed by applying `f` to each element of `s`.
