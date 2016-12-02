@@ -178,7 +178,6 @@ class FunSetSuite extends FunSuite {
       assert(forall(sUnion2, (x: Int) => x < 4), "forall union2 < 3")
       assert(!forall(sUnion2, (x: Int) => x < 2), "forall union2 < 2")
 
-      printSet(sMod4Set)
 
       assert(forall(sMod4Set, (x: Int) => (x % 2) == 0), "forall mod4 mod2")
       assert(!forall(sMod4Set, (x: Int) => x == 201), "forall mod4 mod3")
@@ -200,14 +199,12 @@ class FunSetSuite extends FunSuite {
   test("map returns set where very element is modified by p") {
     new QueryTestSets {
 
-      val sMapx10 = map(sMod4Set, (x: Int) => x * 3)
+      val sMapx10 = map(sMod4Set, (x: Int) => x * 10)
       val sMap1 = map(sMod4Set, (x: Int) => 1)
 
-      printSet(sMapx10)
       assert(contains(sMapx10, 40), "mapx10 has 40")
-      assert(contains(sMapx10, 10), "mapx10 * 10 has 10")
+      assert(!contains(sMapx10, 10), "mapx10 * 10 has 10")
 
-      printSet(sMap1)
       assert(contains(sMap1, 1), "map1 has 1")
       assert(!contains(sMap1, 40), "map1 has 40")
     }
