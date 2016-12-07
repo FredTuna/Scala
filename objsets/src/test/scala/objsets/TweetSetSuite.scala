@@ -113,4 +113,11 @@ class TweetSetSuite extends FunSuite {
     }
   }
 
+  test("allTweets") {
+    new TestSets {
+      println(TweetReader.allTweets.toString)
+      assert(!TweetReader.allTweets.isEmpty)
+    }
+  }
+
   }

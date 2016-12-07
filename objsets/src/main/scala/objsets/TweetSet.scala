@@ -151,7 +151,7 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
       else s
     }
 
-  def union(that: TweetSet): TweetSet = ((left union right) union that) incl elem
+  def union(that: TweetSet): TweetSet = (left union (right union that)) incl elem
 
   def mostRetweeted: Tweet = {
 
@@ -228,11 +228,11 @@ object GoogleVsApple {
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
-  lazy val googleTweets: TweetSet = TweetReader.allTweets//.filter((t: Tweet) => t.toString.contains(google.head))//tweetsContainingList(google)
-  lazy val appleTweets: TweetSet = TweetReader.allTweets//.filter((t: Tweet) => t.toString.contains(apple.head))//tweetsContainingList(apple)
+  lazy val googleTweets: TweetSet = tweetsContainingList(google)
+  lazy val appleTweets: TweetSet = tweetsContainingList(apple)
 
   def tweetsContainingList(ls: List[String]) = {
-    TweetReader.allTweets.filter((t: Tweet) => t.toString.contains(ls.head))//ls.exists((s: String) => t.toString.contains(s)) ))
+    TweetReader.allTweets.filter((t: Tweet) => ls.exists((s: String) => t.toString.contains(s)) )
   }
 
 
@@ -245,6 +245,7 @@ object GoogleVsApple {
   }
 
 object Main extends App {
+ // println(TweetReader.allTweets.toString)
   // Print the trending tweets
   GoogleVsApple.trending foreach println
 }
